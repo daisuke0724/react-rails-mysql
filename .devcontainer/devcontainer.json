@@ -1,0 +1,20 @@
+{
+	"name": "react-rails-mysql",
+	"image": "mcr.microsoft.com/devcontainers/universal:2",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-azuretools.vscode-docker",
+				"GitHub.vscode-pull-request-github",
+				"MS-CEINTL.vscode-language-pack-ja",
+				"bierner.markdown-mermaid",
+				"bierner.github-markdown-preview",
+				"eamodio.gitlens",
+				"DavidAnson.vscode-markdownlint",
+				"HTMLHint.vscode-htmlhint",
+				"esbenp.prettier-vscode",
+				"EditorConfig.EditorConfig"
+			]
+		}
+	}
+}
