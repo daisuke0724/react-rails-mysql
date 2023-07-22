@@ -1,63 +1,64 @@
+---
+networks:
+  backend-db: {}
+  frontend-backend: {}
 services:
+  backend:
+    build: backend
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      TZ: Asia/Tokyo
+    networks:
+      - frontend-backend
+      - backend-db
+    ports:
+      - protocol: tcp
+        published: 3000
+        target: 3000
+    restart: always
+    volumes:
+      - source: ./backend
+        target: /myapp
+        type: bind
+  db:
+    build: db
+    command: "--default-authentication-plugin=mysql_native_password"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      TZ: Asia/Tokyo
+    healthcheck:
+      interval: 3s
+      retries: 5
+      start_period: 30s
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+    networks:
+      - backend-db
+    ports:
+      - protocol: tcp
+        published: 3306
+        target: 3306
+    restart: always
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - db-data:/var/lib/mysql
   frontend:
     build: frontend
-    volumes:
-      - type: bind
-        source: ./frontend
-        target: /usr/src/app
-    command: sh -c "npm run dev"
-    ports:
-      - target: 3000
-        published: 8000
-        protocol: tcp
+    command: bash -c "npm run dev"
     depends_on:
       - backend
     networks:
       - frontend-backend
-  backend:
-    build: backend
-    restart: always
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     ports:
-      - target: 3000
-        published: 3000
-        protocol: tcp
-    environment:
-      TZ: Asia/Tokyo
-    networks:
-      - frontend-backend
-      - backend-db
-    depends_on:
-      db:
-        condition: service_healthy
+      - protocol: tcp
+        published: 8000
+        target: 3000
     volumes:
-      - type: bind
-        source: ./backend
-        target: /myapp
-  db:
-    build: db
-    restart: always
-    command: --default-authentication-plugin=mysql_native_password
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
-      interval: 3s
-      retries: 5
-      start_period: 30s
-    ports:
-      - target: 3306
-        published: 3306
-        protocol: tcp
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      TZ: Asia/Tokyo
-    volumes:
-      - db-data:/var/lib/mysql
-    security_opt:
-      - seccomp:unconfined
-    networks:
-      - backend-db
+      - source: ./frontend/app
+        target: /usr/src/app
+        type: bind
 volumes:
   db-data: {}
-networks:
-  frontend-backend: {}
-  backend-db: {}

@@ -13,7 +13,9 @@
 				"DavidAnson.vscode-markdownlint",
 				"HTMLHint.vscode-htmlhint",
 				"esbenp.prettier-vscode",
-				"EditorConfig.EditorConfig"
+				"EditorConfig.EditorConfig",
+				"PascalReitermann93.vscode-yaml-sort",
+				"p1c2u.docker-compose"
 			]
 		}
 	}
