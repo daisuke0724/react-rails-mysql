@@ -3,13 +3,15 @@ services:
     build: frontend
     volumes:
       - type: bind
-        source: ./frontend/app
+        source: ./frontend
         target: /usr/src/app
-    command: sh -c "cd app && npm run dev"
+    command: sh -c "npm run dev"
     ports:
       - target: 3000
         published: 8000
         protocol: tcp
+    depends_on:
+      - backend
     networks:
       - frontend-backend
   backend:
@@ -24,16 +26,16 @@ services:
       TZ: Asia/Tokyo
     networks:
       - frontend-backend
-      - backend-database
+      - backend-db
     depends_on:
-      database:
+      db:
         condition: service_healthy
     volumes:
       - type: bind
         source: ./backend
         target: /myapp
-  database:
-    build: database
+  db:
+    build: db
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     healthcheck:
@@ -49,13 +51,13 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       TZ: Asia/Tokyo
     volumes:
-      - database-data:/var/lib/mysql
+      - db-data:/var/lib/mysql
     security_opt:
       - seccomp:unconfined
     networks:
-      - backend-database
+      - backend-db
 volumes:
-  database-data: {}
+  db-data: {}
 networks:
   frontend-backend: {}
-  backend-database: {}
+  backend-db: {}
