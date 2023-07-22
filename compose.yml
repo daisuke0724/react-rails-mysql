@@ -1,29 +1,61 @@
 services:
+  frontend:
+    build: frontend
+    volumes:
+      - type: bind
+        source: ./frontend/app
+        target: /usr/src/app
+    command: sh -c "cd app && npm run dev"
+    ports:
+      - target: 3000
+        published: 8000
+        protocol: tcp
+    networks:
+      - frontend-backend
   backend:
     build: backend
+    restart: always
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     ports:
-      - 3000:3000
+      - target: 3000
+        published: 3000
+        protocol: tcp
     environment:
       TZ: Asia/Tokyo
     networks:
-      - backend-db
+      - frontend-backend
+      - backend-database
     depends_on:
-      - db
+      database:
+        condition: service_healthy
     volumes:
-      - ./backend:/myapp
-  db:
-    build: db
+      - type: bind
+        source: ./backend
+        target: /myapp
+  database:
+    build: database
+    restart: always
     command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    ports:
+      - target: 3306
+        published: 3306
+        protocol: tcp
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      TZ: Asia/Tokyo
     volumes:
-      - db-data:/var/lib/mysql
+      - database-data:/var/lib/mysql
     security_opt:
       - seccomp:unconfined
     networks:
-      - backend-db
+      - backend-database
 volumes:
-  db-data: {}
+  database-data: {}
 networks:
-  backend-db: {}
+  frontend-backend: {}
+  backend-database: {}
