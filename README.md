@@ -1,19 +1,4 @@
 # React Rails MySQL Environment
-## セットアップ
-
-### Visual Studio Code インストール
-
-1. [Download Visual Studio Code](https://code.visualstudio.com/download) ページにアクセス
-2. OS に応じたインストーラーをダウンロード
-3. インストールを行う
-
-### Docker Desktop インストール
-
-1. [Download Docker Desktop](https://www.docker.com/products/docker-desktop) ページにアクセス
-2. OS に応じたインストーラーをダウンロード
-3. インストールを行う
-  > Windows機のみWSL2の有効化を促される場合がある  
-  > その際はインストーラーの案内に従って設定すること
 
 ## 開発環境の起動
 
@@ -27,6 +12,24 @@ Dev Container を使って PC が重たくなる方は GitHub Codespaces をお�
 
 ### Dev Container を利用した開発
 
+#### セットアップ
+
+##### Visual Studio Code インストール
+
+1. [Download Visual Studio Code](https://code.visualstudio.com/download) ページにアクセス
+2. OS に応じたインストーラーをダウンロード
+3. インストールを行う
+
+##### Docker Desktop インストール
+
+1. [Download Docker Desktop](https://www.docker.com/products/docker-desktop) ページにアクセス
+2. OS に応じたインストーラーをダウンロード
+3. インストールを行う
+  > Windows機のみWSL2の有効化を促される場合がある  
+  > その際はインストーラーの案内に従って設定すること
+
+#### 実行手順
+
 1. Visual Studio Code を起動する
 2. ソース管理タブを選択
 3. リポジトリのクローンを選択
@@ -37,14 +40,18 @@ Dev Container を使って PC が重たくなる方は GitHub Codespaces をお�
 
 ### GitHub Codespaces を利用した開発
 
+#### 実行手順
+
 1. 本リポジトリの Code タブを選択
 2. Code ボタンを選択
 3. Codespaces タブを選択
 4. Create Codespace on main ボタンを選択
 
-## 実行手順
+## サーバ起動方法
 
 ### 初回のみ
+
+#### 実行手順
 
 ```bash
 # イメージビルド
@@ -56,6 +63,7 @@ docker compose run backend rails db:create
 
 ### 必要に応じて
 
+#### 実行手順
 ```bash
 # サーバ起動
 docker compose up -d
