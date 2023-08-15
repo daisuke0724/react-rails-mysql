@@ -14,10 +14,6 @@ services:
     networks:
       - frontend-backend
       - backend-db
-    ports:
-      - protocol: tcp
-        published: 3000
-        target: 3000
     restart: always
     volumes:
       - source: ./backend
@@ -36,10 +32,6 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
     networks:
       - backend-db
-    ports:
-      - protocol: tcp
-        published: 3306
-        target: 3306
     restart: always
     security_opt:
       - seccomp:unconfined
@@ -47,7 +39,7 @@ services:
       - db-data:/var/lib/mysql
   frontend:
     build: frontend
-    command: bash -c "npm run dev"
+    command: bash -c "npm ci && npm run dev"
     depends_on:
       - backend
     networks:
@@ -60,5 +52,6 @@ services:
       - source: ./frontend/app
         target: /usr/src/app
         type: bind
+    working_dir: /usr/src/app
 volumes:
   db-data: {}
